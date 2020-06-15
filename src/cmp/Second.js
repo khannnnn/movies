@@ -8,6 +8,7 @@ class Second extends React.Component{
             moviesList:[],
             movieName:'',
             releaseDate:'',
+            firstTime:false
         }
     }
 
@@ -20,9 +21,18 @@ class Second extends React.Component{
         }).then((res => {
             res.json().then((data) => {
                 console.log("response", data);
-                this.setState({
-                    moviesList: data.Search
-                })
+                if(data.Response == "True"){
+                    console.log("API Data")
+                    this.setState({
+                        moviesList: data.Search,
+                        firstTime: true
+                    });
+                } else {
+                    this.setState({
+                        moviesList: [],
+                        firstTime: true
+                    });
+                }
             })
         }))
     }
@@ -59,21 +69,32 @@ class Second extends React.Component{
                     <Form.Group></Form.Group>
 
                     {
-                        this.state.moviesList.length > 0 ?
-                            this.state.moviesList.map((item, i)=>
-                                <Card style={{ width: '15rem' }} key={i+1}>
-                                    <Card.Img variant="top" src={item.Poster} />
-                                    <Card.Body>
-                                        <Card.Title>{item.Title}</Card.Title>
-                                        <Card.Text>
-                                            {item.Title}
-                                        </Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            )
-                            
+                        this.state.firstTime ? 
+                            <Row>
+                                {
+                                    this.state.moviesList.length > 0 ?
+                                        this.state.moviesList.map((item, i) =>
+                                            <Col key={i+1} style={{textAlign:"center", marginTop:"10px"}} lg={3} sm={4}>
+                                                <Card style={{ width: '15rem' }}>
+                                                    <Card.Img variant="top" src={item.Poster} />
+                                                    <Card.Body>
+                                                        <Card.Title>{item.Title}</Card.Title>
+                                                        <Card.Text>
+                                                            <p>Title: {item.Title}</p>
+                                                            <p>Release Year: {item.Year}</p>
+                                                        </Card.Text>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                        )
+                                        
+                                    : 
+                                        <p> Record not found </p>
+                                }
+                            </Row>
                         : null
                     }
+                    
                 </Jumbotron>
                     
                
