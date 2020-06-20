@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Jumbotron, Form, Row, Col, ListGroup, ListGroupItem, Card } from 'react-bootstrap';
+import * as actions from '../actions';
+import { connect } from 'react-redux';
 
 class Second extends React.Component{
     constructor(props) {
@@ -9,6 +11,15 @@ class Second extends React.Component{
             movieName:'',
             releaseDate:'',
             firstTime:false
+        }
+    }
+
+    componentDidMount(){
+        if(this.props.actionList.length > 0){
+            this.setState({
+                moviesList: this.props.actionList,
+                firstTime: true
+            });
         }
     }
 
@@ -27,6 +38,7 @@ class Second extends React.Component{
                         moviesList: data.Search,
                         firstTime: true
                     });
+                    this.props.secondActionList(data.Search);
                 } else {
                     this.setState({
                         moviesList: [],
@@ -96,11 +108,19 @@ class Second extends React.Component{
                     }
                     
                 </Jumbotron>
-                    
-               
             </div>
         )
     }
 }
 
-export default Second;
+// Dispatch the actions
+const mapDispatchToProps = dispatch => ({
+    secondActionList: (data) => dispatch(actions.secondMoviesList(data))
+})
+
+// Get state data from store
+const mapStateToProps = state =>({
+    actionList: state.secondMoviesList
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Second);
